@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+<meta charset="ISO-8859-1">
+<title>Review</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body class=p-5>
+<div class="w-75 mx-5">
+<h1 class="mb-3 d-block">Review</h1>
+<form method="post" th:attr = "onsubmit=|handleFormSubmit(event)|">
+<input name="reivew_id" th:value = "${reviewId}" hidden ="hidden">
+<input name="id" th:value = "${productId}" hidden ="hidden">
+<div class="mb-3">
+  <label for="username" class="form-label">User name</label>
+  <input type="text" class="form-control" id="username" name="user_name" th:value="${username}"/>
+</div>
+<div class="mb-3">
+<label for="customRange1" class="form-label">rate</label>
+<input type="range" class="form-range"  min="1" max="10" id="rate" name="rate" th:value="${rate}" oninput="this.nextElementSibling.value = this.value"/>
+<span></span>
+</div>
+<div class="mb-3">
+  <label for="reivew" class="form-label">Review</label>
+  <input type="text" class="form-control" id="reivew" name="review" value="review"  th:value="${review}"/>
+</div>
+
+<div class="mb-3">
+  <label for="quantity" class="form-label">Quantity</label>
+  <input type="number" class="form-control" id="quantity" name="quantity" th:value="${quantity}"/>
+</div>
+<button class="btn btn-primary" type="submit" id="AddReviewBtn">Add Review</button>
+<button class="btn btn-primary" type="submit" id="updateReviewBtn">Update Review</button>
+</form>
+</div>
+</body>
+<script>
+$(document).ready(()=>{
+	var url = window.location.href;
+	let productId = $("input[name='id']").val();
+	let reviewId = $("input[name=reivew_id]").val();
+	console.log("reviewId",reviewId>0);
+	if(reviewId >  0 ){
+		$("#AddReviewBtn").hide();
+		$("form").attr("method",'put');
+		let reviewId = $("input[name=reivew_id]").val();
+		console.log(reviewId);
+		$("form").attr("action",`update-review/${reviewId}`);
+		
+	}
+	else{
+		$("#updateReviewBtn").hide();
+		$("form").attr("action",`/review/${productId}`);
+		$("#reivew").val("");
+/* 		$("input[name='review_id']").val = review.get_productReviewId();
+		$("input[name='product_id']").val = review.get_productId();
+		$("input[name='user_name']").val = review.get_userName(); */
+	}
+});
+
+var handleFormSubmit = (event) =>{
+	 // Prevent the form from submitting.
+	  event.preventDefault();
+	  let productId = $("input[name='id']").val();
+	  let url = `/review/${productId}`;
+	  let reviewId = $("input[name=reivew_id]").val();
+	  let method = "post";
+	  if( reviewId >  0){
+		  method = "put";
+		  let reviewId = $("input[name=reivew_id]").val();
+			console.log(reviewId);
+			url = `/update-review/${reviewId}`;
+	  }
+	  // Set url for submission and collect data.
+	  
+	  console.log(url);
+	  
+	  const formData = new FormData(event.target);
+	  var object = {};
+	  formData.forEach(function(value, key){
+	      object[key] = value;
+	  });
+	  var json = JSON.stringify(object);
+	  console.log(json);
+	  $.ajax({
+		  url: url,
+		  type: method,
+	      contentType: "application/json",
+	      data: json ,
+	      dataType: "html",
+	      success: function (result) {
+	    	  console.log("successReview");
+	    	  window.location.href="http://localhost:8085/reviews/"+productId;
+	        }
+	  });
+	  
+
+	 /*  window.location.href = "http://localhost:8085/reviews/"+ productId; */
+}
+</script>
+</html>
