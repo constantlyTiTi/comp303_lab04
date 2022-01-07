@@ -19,12 +19,12 @@ public class Product {
 	public Product() {
 	}
 
-	public Product(@JsonProperty("product_name") String productName, @JsonProperty("price") double price) {
-
-
-		this._price = price;
-		this._productName = productName;
-	}
+//	public Product(@JsonProperty("product_name") String productName, @JsonProperty("price") double price) {
+//
+//
+//		this._price = price;
+//		this._productName = productName;
+//	}
 
 	@JsonCreator
 	public Product(@JsonProperty("product_name") String productName, @JsonProperty("price") double price,
